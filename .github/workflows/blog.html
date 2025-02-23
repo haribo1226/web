@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        .blog-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .post {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .post img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .like-button {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .comments {
+            margin-top: 10px;
+        }
+        .comment {
+            border-top: 1px solid #ddd;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .comment img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .login-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: gray;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .icon-selection img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .icon-selection img.selected {
+            border: 2px solid blue;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Blog</h1>
+            <div class="corner-gif top-right">
+                <img src="https://i.gifer.com/origin/f5/f5baef4b6b6677020ab8d091ef78a3bc_w200.gif" alt="Animation">
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="navigation.html">Home</a></li>
+                <li><a href="gallery.html">Galerie</a></li>
+                <li><a href="about.html">Über Uns</a></li>
+                <li><a href="contact.html">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="blog-post">
+            <h2>Mein erster Blog-Post</h2>
+            <p>Das ist ein Beispieltext für meinen Blog.</p>
+            <button class="like-button" onclick="likePost()">❤️ Like <span id="like-count">0</span></button>
+        </section>
+        
+        <section class="comments">
+            <h3>Kommentare</h3>
+            <div id="comment-list"></div>
+            <textarea id="comment-text" placeholder="Schreibe einen Kommentar..." disabled></textarea>
+            <button onclick="postComment()" disabled>Kommentieren</button>
+        </section>
+    </main>
+
+    <div class="login-container">
+        <img id="user-icon" class="user-icon" src="default-icon.png" alt="Benutzer Icon">
+        <button onclick="openModal('login-modal')">Login</button>
+        <button onclick="openModal('register-modal')">Registrieren</button>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay" onclick="closeAllModals()"></div>
+    
+    <div id="login-modal" class="modal">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Benutzername">
+        <input type="password" id="login-password" placeholder="Passwort">
+        <button onclick="login()">Einloggen</button>
+        <button onclick="closeAllModals()">Schließen</button>
+    </div>
+    
+    <div id="register-modal" class="modal">
+        <h2>Registrieren</h2>
+        <input type="text" id="register-username" placeholder="Benutzername">
+        <input type="password" id="register-password" placeholder="Passwort">
+        <div class="icon-selection">
+            <p>Wähle ein Icon:</p>
+            <img src="ihttps://up.picr.de/49292124ys.png" onclick="selectIcon('ihttps://up.picr.de/49292124ys.png')">
+            <img src="icon2.png" onclick="selectIcon('icon2.png')">
+            <img src="icon3.png" onclick="selectIcon('icon3.png')">
+        </div>
+        <button onclick="register()">Registrieren</button>
+        <button onclick="closeAllModals()">Schließen</button>
+    </div>
+    
+    <script>
+    let currentUser = null;
+    let selectedIcon = "https://up.picr.de/49292124ys.png";
+    let hasLiked = false;
+
+    function openModal(id) {
+        document.getElementById("modal-overlay").style.display = "block";
+        document.getElementById(id).style.display = "block";
+    }
+
+    function closeAllModals() {
+        document.getElementById("modal-overlay").style.display = "none";
+        document.querySelectorAll(".modal").forEach(modal => modal.style.display = "none");
+    }
+
+    function selectIcon(iconUrl) {
+        selectedIcon = iconUrl;
+        document.querySelectorAll(".icon-selection img").forEach(img => img.classList.remove("selected"));
+        event.target.classList.add("selected");
+    }
+
+    async function register() {
+        const username = document.getElementById("register-username").value;
+        const password = document.getElementById("register-password").value;
+        if (!selectedIcon) {
+            selectedIcon = "https://up.picr.de/49292124ys.png";
+        }
+
+        const response = await fetch("http://localhost:3000/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password, icon: selectedIcon })
+        });
+
+        if (response.ok) {
+            alert("Registrierung erfolgreich!");
+            closeAllModals();
+        } else {
+            alert("Registrierung fehlgeschlagen!");
+        }
+    }
+
+    async function login() {
+        const username = document.getElementById("login-username").value;
+        const password = document.getElementById("login-password").value;
+        try {
+            const response = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (!response.ok) {
+                throw new Error("Login fehlgeschlagen!");
+            }
+
+            const data = await response.json();
+            currentUser = { username: username, icon: data.icon || "https://up.picr.de/49292124ys.png" };
+            localStorage.setItem("currentUser", JSON.stringify(currentUser));
+            updateUserUI();
+            closeAllModals();
+        } catch (error) {
+            console.error(error);
+            alert("Fehler beim Login: Server nicht erreichbar!");
+        }
+    }
+
+    function updateUserUI() {
+        if (currentUser) {
+            const userIconElement = document.getElementById("user-icon");
+            userIconElement.src = currentUser.icon;
+            userIconElement.onerror = function () {
+                this.src = "https://up.picr.de/49292124ys.png";
+            };
+            document.getElementById("comment-text").disabled = false;
+            document.querySelector(".comments button").disabled = false;
+            document.querySelector(".like-button").disabled = false;
+        }
+    }
+
+    function likePost() {
+        if (!currentUser) {
+            alert("Bitte logge dich ein, um zu liken!");
+            return;
+        }
+        if (hasLiked) {
+            alert("Du kannst nur einmal liken!");
+            return;
+        }
+        let likeCount = document.getElementById("like-count");
+        likeCount.innerText = parseInt(likeCount.innerText) + 1;
+        hasLiked = true;
+    }
+
+    function postComment() {
+        if (!currentUser) {
+            alert("Bitte logge dich ein, um einen Kommentar zu schreiben!");
+            return;
+        }
+        const commentText = document.getElementById("comment-text").value;
+        if (!commentText) return;
+
+        const commentList = document.getElementById("comment-list");
+        const newComment = document.createElement("div");
+        newComment.classList.add("comment");
+        newComment.innerHTML = `<img src="${currentUser.icon}" onerror="this.src='https://up.picr.de/49292124ys.png'" alt="Benutzer Icon"> <strong>${currentUser.username}:</strong> <span>${commentText}</span>`;
+        commentList.appendChild(newComment);
+        document.getElementById("comment-text").value = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedUser = localStorage.getItem("currentUser");
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUserUI();
+        }
+    });
+</script>
+
+
+
+</body>
+</html>

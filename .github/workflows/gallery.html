@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .corner-gif.top-right img {
+            width: 80px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>GALERIE</h1>
+            <div class="corner-gif top-right">
+                <img src="https://i.gifer.com/origin/f5/f5baef4b6b6677020ab8d091ef78a3bc_w200.gif" alt="Animation">
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="navigation.html">HOME</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">Über Uns</a></li>
+                <li><a href="contact.html">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section class="gallery-container">
+        <h2>Unsere Galerie</h2>
+        <p>Hier findest du eine Auswahl unserer schönsten Bilder. Lass dich inspirieren!</p>
+        <div class="gallery-wrapper">
+            <div class="gallery">
+                <div class="gallery-item"><img src="https://example.com/image1.jpg" alt="Bild 1"></div>
+                <div class="gallery-item"><img src="https://example.com/image2.jpg" alt="Bild 2"></div>
+                <div class="gallery-item"><img src="https://example.com/image3.jpg" alt="Bild 3"></div>
+                <div class="gallery-item"><img src="https://example.com/image4.jpg" alt="Bild 4"></div>
+                <div class="gallery-item"><img src="https://example.com/image5.jpg" alt="Bild 5"></div>
+                <div class="gallery-item"><img src="https://example.com/image6.jpg" alt="Bild 6"></div>
+                <div class="gallery-item"><img src="https://example.com/image7.jpg" alt="Bild 7"></div>
+                <div class="gallery-item"><img src="https://example.com/image8.jpg" alt="Bild 8"></div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>&copy; 2025 Meine Webseite | Designed with ❤️</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("Galerie-Seite geladen!");
+        });
+    </script>
+</body>
+</html>
